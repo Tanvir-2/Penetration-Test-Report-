@@ -4,9 +4,13 @@
 ## Internal Network Penetration Test Report
 
 **Target:** Nagoya Industries Domain Controller
+
 **Domain:** nagoya-industries.com
+
 **Assessment Type:** Internal Penetration Test
-**Author:** Tanvir Ahmed
+
+**Author:** Tanvir Ahmed (OSCP+, CEH, AZ-500, SC-200, ISO27001)
+
 **Date:** 2026
 
 ---
