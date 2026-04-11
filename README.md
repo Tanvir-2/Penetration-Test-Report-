@@ -4,6 +4,8 @@ OSCP+ certified penetration tester with hands-on experience in
 Active Directory exploitation, Windows privilege escalation,
 and Linux server compromise.
 
+Certificate Link: https://api.accredible.com/v1/frontend/credential_website_embed_image/certificate/162604418
+
 This repository contains professional-style penetration testing
 reports based on machines from Hack The Box and Proving Grounds.
 
