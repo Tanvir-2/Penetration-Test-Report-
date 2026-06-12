@@ -30,3 +30,4 @@ Windows
 Linux
 - KeyVault – Linux enumeration and privilege escalation
 - Nibble – Web application exploitation leading to root access
+- Apex - Chaining path traversal + database exploitation + RCE for full system compromise.
