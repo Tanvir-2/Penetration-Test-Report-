@@ -32,3 +32,4 @@ Linux
 - Nibble – Web application exploitation leading to root access
 - Apex - Chaining path traversal + database exploitation + RCE for full system compromise.
 - Spaghetti - IRC Bot Exploitation · MySQL Injection · Cron Job Abuse · Privilege Escalation
+- Fantastic - Grafana CVE-2021-43798 · SQLite Database Analysis · AES Decryption · Disk Group Abuse · debugfs Privilege Escalation
