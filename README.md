@@ -26,6 +26,7 @@ Active Directory
 Windows
 - Resourced – Domain credential abuse and privilege escalation
 - Hutch – Windows privilege escalation through service misconfiguration
+- Vector - Padding Oracle Attack · AES-CBC Decryption · RDP Access · RAR File Analysis · Credential Recovery
 
 Linux
 - KeyVault – Linux enumeration and privilege escalation
