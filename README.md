@@ -34,3 +34,4 @@ Linux
 - Apex - Chaining path traversal + database exploitation + RCE for full system compromise.
 - Spaghetti - IRC Bot Exploitation · MySQL Injection · Cron Job Abuse · Privilege Escalation
 - Fantastic - Grafana CVE-2021-43798 · SQLite Database Analysis · AES Decryption · Disk Group Abuse · debugfs Privilege Escalation
+- Codo - Default Credentials · File Upload Bypass · PHP Web Shell · Credential Reuse · Privilege Escalation
