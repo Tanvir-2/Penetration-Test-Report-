@@ -696,8 +696,6 @@ nt authority\system
 
 After priv escalation, connect via `evil-winrm` as `christopher.lewis` to retrieve local.txt:
 
-<img width="727" height="170" alt="image" src="https://github.com/user-attachments/assets/589ba870-f4ef-41b0-a202-ceb919eb3b22" />
-
 
 ```bash
 evil-winrm -i 192.168.144.21 -u christopher.lewis -p Password1
@@ -706,6 +704,7 @@ evil-winrm -i 192.168.144.21 -u christopher.lewis -p Password1
 ```
 59b8da150907e35a129a6262f183a418
 ```
+<img width="727" height="170" alt="image" src="https://github.com/user-attachments/assets/589ba870-f4ef-41b0-a202-ceb919eb3b22" />
 
 ### proof.txt
 
