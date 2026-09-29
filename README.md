@@ -27,6 +27,7 @@ Windows
 - Resourced – Domain credential abuse and privilege escalation
 - Hutch – Windows privilege escalation through service misconfiguration
 - Vector - Padding Oracle Attack · AES-CBC Decryption · RDP Access · RAR File Analysis · Credential Recovery
+- Osaka - Hard Windows box — binary exploitation of a custom FTP server (format string ASLR bypass → buffer overflow → ROP/DEP bypass) to RCE, then SeDebugPrivilege abuse to SYSTEM.
 
 Linux
 - KeyVault – Linux enumeration and privilege escalation
