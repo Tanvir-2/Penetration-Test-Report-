@@ -1,10 +1,15 @@
 # 🐧 Passport — Proving Grounds Practice Writeup
 
 > **Platform:** Offensive Security Proving Grounds Practice
+> 
 > **Difficulty:** Intermediate
+> 
 > **OS:** Linux (Ubuntu 20.04.6 LTS)
+> 
 > **Author:** [Tanvir Ahmed](https://github.com/Tanvir-2) | [Portfolio](https://tanvirkarim.it)
+> 
 > **Status:** ✅ Completed
+> 
 > **Tags:** `FTP` `Web Enumeration` `IDOR` `Credential Leak` `SSH Key Cracking` `John The Ripper` `Sudo Misconfiguration` `Privilege Escalation`
 
 ---
