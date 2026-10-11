@@ -22,8 +22,8 @@ Skills demonstrated include:
 Active Directory
 - Forest – Domain compromise through AS-REP roasting and ACL abuse
 - Nagoya – Active Directory privilege escalation attack chain
-- Resourced - Intermediate AD box — a leaked AD description password exposes an NTDS.dit backup; secretsdump + pass-the-hash + Resource-Based Constrained Delegation (RBCD) yield SYSTEM on the DC.
-- Sauna - Easy AD box — OSINT-built usernames enable AS-REP Roasting; cracked creds + AutoLogon registry leak + DCSync + pass-the-hash give Domain Admin.
+- Resourced - a leaked AD description password exposes an NTDS.dit backup; secretsdump + pass-the-hash + Resource-Based Constrained Delegation (RBCD) yield SYSTEM on the DC.
+- Sauna - OSINT-built usernames enable AS-REP Roasting; cracked creds + AutoLogon registry leak + DCSync + pass-the-hash give Domain Admin.
 
 Windows
 - Hutch – Windows privilege escalation through service misconfiguration
