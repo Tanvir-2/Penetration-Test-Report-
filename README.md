@@ -37,4 +37,5 @@ Linux
 - Spaghetti - IRC Bot Exploitation · MySQL Injection · Cron Job Abuse · Privilege Escalation
 - Fantastic - Grafana CVE-2021-43798 · SQLite Database Analysis · AES Decryption · Disk Group Abuse · debugfs Privilege Escalation
 - Codo - Default Credentials · File Upload Bypass · PHP Web Shell · Credential Reuse · Privilege Escalation
-- Passport - Intermediate Linux box — web IDOR leaks a credential, FTP yields an SSH key cracked with John, then a writable-path sudo rule (/tmp/base64) escalates to root.
+- Passport - web IDOR leaks a credential, FTP yields an SSH key cracked with John, then a writable-path sudo rule (/tmp/base64) escalates to root.
+- SoSimple - WordPress Social Warfare 3.5.0 RCE (CVE-2019-9978) gives a foothold; a leaked SSH key plus a two-stage sudo chain escalates to root.
